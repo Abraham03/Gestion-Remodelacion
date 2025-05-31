@@ -1,0 +1,28 @@
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 16px;
+  height: 64px; /* Altura fija para el footer */
+  background-color: #3f51b5; /* Color de fondo para que sea visible */
+
+  span {
+    font-size: 14px;
+    text-align: center;
+  }
+
+  /* Ajustes para pantallas pequeñas */
+  @media (max-width: 600px) {
+    span {
+      font-size: 12px;
+    }
+
+    padding: 4px 8px;
+    height: 48px; /* Altura reducida en móviles */
+  }
+}

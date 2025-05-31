@@ -1,0 +1,55 @@
+mat-toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 64px; // Altura estándar para desktop
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); // Sombra sutil
+
+  .spacer {
+    flex: 1;
+  }
+
+  .title {
+    font-size: 20px;
+    font-weight: 500;
+    margin-left: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .user-info-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .username-display {
+      font-weight: 500;
+    }
+  }
+
+  /* Ajustes para pantallas pequeñas */
+  @media (max-width: 600px) {
+    height: 56px; // Altura reducida en móviles
+    padding: 0 8px;
+
+    .title {
+      font-size: 18px;
+      margin-left: 8px;
+      max-width: 150px; // Limitar el ancho en móviles
+    }
+
+    .hide-on-mobile {
+      display: none; // Ocultar el nombre de usuario en pantallas pequeñas
+    }
+  }
+
+  /* Pantallas muy pequeñas */
+  @media (max-width: 400px) {
+    .title {
+      max-width: 100px;
+    }
+  }
+}

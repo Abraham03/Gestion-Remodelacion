@@ -1,0 +1,48 @@
+// Original variables - keep these
+:root {
+  --header-height-desktop: 64px;
+  --header-height-mobile: 56px;
+  --footer-height-desktop: 64px;
+  --footer-height-mobile: 48px;
+  --sidebar-width-open: 250px;
+  --sidebar-width-closed: 70px;
+}
+
+.app-sidenav-container {
+  height: calc(100vh - var(--header-height-desktop) - var(--footer-height-desktop));
+  margin-top: var(--header-height-desktop);
+  margin-bottom: var(--footer-height-desktop);
+  background-color: #f0f2f5;
+
+  @media (max-width: 600px) {
+    height: calc(100vh - var(--header-height-mobile) - var(--footer-height-mobile));
+    margin-top: var(--header-height-mobile);
+    margin-bottom: var(--footer-height-mobile);
+  }
+}
+
+mat-sidenav {
+  width: var(--sidebar-width-open); // This sets the open width
+  transition: width 0.3s ease;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+
+  &.sidebar-closed {
+    width: var(--sidebar-width-closed); // This sets the closed width
+  }
+
+  &.mat-drawer-opened.mat-drawer-over {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+}
+
+
+
+.main-content {
+  padding: 24px;
+  min-height: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: 600px) {
+    padding: 16px;
+  }
+}

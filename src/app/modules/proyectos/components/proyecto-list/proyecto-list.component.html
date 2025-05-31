@@ -1,0 +1,73 @@
+<div class="proyectos-list">
+  <h1>Lista de Proyectos</h1>
+
+  <button mat-raised-button color="primary" (click)="openForm()">
+    <mat-icon>add</mat-icon> Agregar Proyecto
+  </button>
+
+  <mat-form-field>
+    <mat-label>Filtrar</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Ej. Proyecto A" #input>
+  </mat-form-field>
+
+  <div class="table-container">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <ng-container matColumnDef="nombreProyecto">
+        <th mat-header-cell *matHeaderCellDef>Nombre del Proyecto</th>
+        <td mat-cell *matCellDef="let proyecto">{{ proyecto.nombreProyecto }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="nombreCliente">
+        <th mat-header-cell *matHeaderCellDef>Cliente</th>
+        <td mat-cell *matCellDef="let proyecto">{{ proyecto.nombreCliente }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="nombreEmpleadoResponsable">
+        <th mat-header-cell *matHeaderCellDef>Empleado Responsable</th>
+        <td mat-cell *matCellDef="let proyecto">{{ proyecto.nombreEmpleadoResponsable }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="estado">
+        <th mat-header-cell *matHeaderCellDef>Estado</th>
+        <td mat-cell *matCellDef="let proyecto">{{ proyecto.estado }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="progresoPorcentaje">
+        <th mat-header-cell *matHeaderCellDef>Progreso (%)</th>
+        <td mat-cell *matCellDef="let proyecto">{{ proyecto.progresoPorcentaje }}%</td>
+      </ng-container>
+
+      <ng-container matColumnDef="montoContrato">
+        <th mat-header-cell *matHeaderCellDef>Monto Contrato</th>
+        <td mat-cell *matCellDef="let proyecto">{{ proyecto.montoContrato | currency:'USD':'symbol':'1.2-2' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="fechaInicio">
+        <th mat-header-cell *matHeaderCellDef>Fecha Inicio</th>
+        <td mat-cell *matCellDef="let proyecto">{{ proyecto.fechaInicio | date:'mediumDate' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="fechaFinEstimada">
+        <th mat-header-cell *matHeaderCellDef>Fecha Fin Estimada</th>
+        <td mat-cell *matCellDef="let proyecto">{{ proyecto.fechaFinEstimada | date:'mediumDate' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef>Acciones</th>
+        <td mat-cell *matCellDef="let proyecto">
+          <button mat-icon-button color="primary" (click)="openForm(proyecto)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteProyecto(proyecto.id!)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </div>
+</div>

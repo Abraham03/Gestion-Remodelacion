@@ -1,0 +1,323 @@
+/* Define custom CSS variables for easier theming */
+:root {
+  --color-primary: #3f51b5; // Indigo
+  --color-accent: #ff4081;  // Pink
+  --color-warn: #f44336;    // Red
+  --color-success: #4caf50; // Green (for balance, finished projects)
+  --color-info: #00bcd4;    // Cyan (for planned projects)
+  --color-text-light: #757575;
+  --color-text-dark: #212121;
+  --color-background-light: #f5f5f5; // Lighter background
+  --color-card-background: #ffffff;
+  --color-border-light: #e0e0e0;
+}
+
+.dashboard-content {
+  padding: 24px; // Mantenemos el padding actual para los lados
+  padding-top: 80px; /* Aumenta este valor según la altura de tu header */
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: var(--color-background-light);
+  border-radius: 8px;
+
+  @media (max-width: 768px) {
+  .dashboard-content {
+    padding-top: 64px; /* Ajusta este valor si el header es más pequeño en móviles */
+  }
+}
+
+  h1 {
+    font-size: clamp(2.2rem, 5vw, 3rem); // Slightly larger
+    color: var(--color-primary);
+    text-align: center;
+    margin-bottom: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px; // Improve readability
+  }
+
+  h2 {
+    font-size: clamp(1.6rem, 4vw, 2.4rem); // Slightly larger
+    color: var(--color-text-dark);
+    margin-top: 32px;
+    margin-bottom: 16px;
+    border-bottom: 2px solid var(--color-border-light);
+    padding-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .summary-grid, .project-grid, .material-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); // Adjusted min-width
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  .summary-card {
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 8px;
+    background-color: var(--color-card-background);
+    padding: 16px; // Add some internal padding
+
+    // Dynamic border color based on the class added in HTML
+    &.color-primary { border-left: 5px solid var(--color-primary); }
+    &.color-accent { border-left: 5px solid var(--color-accent); }
+    &.color-warn { border-left: 5px solid var(--color-warn); }
+    &.color-success { border-left: 5px solid var(--color-success); }
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    mat-card-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0; // Reset header padding
+    }
+
+    .summary-icon {
+      font-size: clamp(3rem, 6vw, 4rem);
+      width: clamp(3rem, 6vw, 4rem);
+      height: clamp(3rem, 6vw, 4rem);
+      margin-bottom: 8px;
+      // Colors are applied dynamically via .color-primary, .color-accent etc.
+    }
+
+    mat-card-subtitle {
+      font-size: 1.1rem;
+      color: var(--color-text-light);
+      font-weight: 500;
+      margin-bottom: 4px;
+      line-height: 1.2; // Adjust line height for subtitle
+    }
+
+    .summary-value {
+      font-size: clamp(2.2rem, 7vw, 3.5rem);
+      margin: 0;
+      font-weight: 700;
+      color: var(--color-text-dark);
+      padding-top: 8px; // Space from subtitle
+    }
+  }
+
+  .project-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    border-radius: 8px;
+    background-color: var(--color-card-background);
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    mat-card-header {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding-bottom: 8px;
+      padding-right: 16px; // Ensure padding on sides
+    }
+
+    mat-card-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--color-text-dark);
+      margin-bottom: 4px;
+    }
+
+    mat-card-subtitle {
+      font-size: 0.95rem;
+      color: var(--color-text-light);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .project-status-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #ccc; // Default grey
+
+      &.status-planned { background-color: var(--color-info); }
+      &.status-in-progress { background-color: var(--color-primary); }
+      &.status-finished { background-color: var(--color-success); }
+      &.status-cancelled { background-color: var(--color-warn); }
+        &.status-paused { background-color: var(--color-text-light); } // Gray
+  &.status-pending { background-color: var(--color-accent); } // Yellow/Amber
+    }
+
+    mat-card-content {
+      padding-top: 0;
+      p {
+        margin-bottom: 6px;
+        font-size: 0.95rem;
+        color: #424242;
+        strong {
+          color: #333;
+        }
+      }
+    }
+
+    .progress-bar-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 16px;
+      margin-bottom: 8px;
+    }
+
+    mat-progress-bar {
+      flex-grow: 1;
+      height: 10px;
+      border-radius: 5px;
+      background-color: #e0e0e0;
+      .mat-progress-bar-fill {
+        transition: transform 0.4s ease;
+      }
+    }
+
+    .progress-value {
+      font-size: 0.9rem;
+      color: var(--color-primary);
+      font-weight: 500;
+    }
+
+    mat-card-actions {
+      padding: 8px 16px 16px;
+      display: flex;
+      justify-content: flex-end;
+      button {
+        font-weight: 500;
+      }
+    }
+  }
+
+  .chart-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    background-color: var(--color-card-background);
+
+    mat-card-header {
+      padding-bottom: 0;
+      mat-card-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--color-text-dark);
+      }
+    }
+
+    mat-card-content {
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-top: 16px;
+      padding-bottom: 16px;
+    }
+
+    .chart-container {
+      width: 100%;
+      height: 350px; // Slightly increased height
+      max-height: 400px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      canvas {
+        max-width: 100%;
+        max-height: 100%;
+      }
+    }
+  }
+
+  .material-card {
+    border-radius: 8px;
+    background-color: var(--color-card-background);
+    border-top: 5px solid #ff9800; // Orange color for materials
+
+    mat-card-header {
+      display: flex;
+      align-items: center;
+      padding-bottom: 8px;
+    }
+
+    .material-icon {
+      font-size: 2.5rem;
+      width: 2.5rem;
+      height: 2.5rem;
+      margin-right: 12px;
+      color: #ff9800; // Match top border color
+    }
+
+    mat-card-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--color-text-dark);
+    }
+
+    mat-card-content {
+      padding-top: 0;
+      p {
+        margin: 0;
+        font-size: 0.95rem;
+        color: #424242;
+        strong {
+          color: #333;
+        }
+      }
+    }
+  }
+
+  /* Ajustes para pantallas pequeñas */
+  @media (max-width: 768px) {
+    padding: 16px;
+
+    .summary-grid, .project-grid, .material-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+    }
+
+    .summary-card .summary-icon {
+      font-size: 3.5rem;
+      width: 3.5rem;
+      height: 3.5rem;
+    }
+
+    .summary-card mat-card-subtitle {
+      font-size: 1rem;
+    }
+
+    .summary-card .summary-value {
+      font-size: 2.8rem;
+    }
+
+    .chart-card .chart-container {
+      height: 280px;
+    }
+  }
+
+  /* Ajustes para pantallas medianas (tablets) */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .summary-grid {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    .project-grid, .material-grid {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+  }
+}

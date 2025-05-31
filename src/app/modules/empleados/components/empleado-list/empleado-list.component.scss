@@ -1,0 +1,51 @@
+.empleado-list {
+  padding: 1rem;
+  margin-bottom: 4rem;
+
+  h1 {
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    color: #3f51b5;
+    text-align: center;
+    margin-bottom: 1rem;
+    margin-top: 3rem;
+  }
+
+  button {
+    margin-bottom: 1rem;
+  }
+
+  .table-container {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    min-width: 600px;
+  }
+
+  .active {
+    color: green;
+  }
+
+  .inactive {
+    color: red;
+  }
+
+  mat-paginator {
+    margin-top: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    h1 {
+      font-size: 1.25rem;
+    }
+
+    button {
+      width: 100%;
+    }
+
+    table {
+      min-width: 600px; /* Permite el desplazamiento horizontal en móviles */
+    }
+  }
+}

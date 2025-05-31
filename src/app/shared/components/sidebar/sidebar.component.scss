@@ -1,0 +1,78 @@
+// src/app/shared/components/sidebar/sidebar.component.scss
+
+mat-nav-list {
+  padding-top: 20px; // Espacio para la información del usuario
+
+  a {
+    display: flex;
+    align-items: center;
+    // Add this for better icon alignment when text is hidden
+    justify-content: flex-start;
+    gap: 8px;
+    height: 48px;
+    padding: 0 16px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, color 0.2s ease; // Smooth transitions
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.04);
+    }
+  }
+
+  .active {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #3f51b5;
+    font-weight: 500;
+  }
+
+  // Ensure icon is always visible even when sidebar is closed
+  mat-icon {
+    margin-right: 16px;
+    // For closed sidebar, align icon to center
+    // This assumes mat-list-icon will handle it, but can be explicit if needed
+    // transition: margin-right 0.3s ease; // Add transition for icon margin
+  }
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background-color: #3f51b5;
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+  .user-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-right: 16px;
+    // Flex-shrink ensures it doesn't get squeezed too much
+    flex-shrink: 0;
+  }
+
+  .user-details {
+    display: flex;
+    flex-direction: column;
+    // Allow details to take available space
+    flex-grow: 1;
+    // Hide overflow text with ellipsis if sidebar is too narrow
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    .username {
+      font-weight: 600;
+      font-size: 1.1rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .role {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}

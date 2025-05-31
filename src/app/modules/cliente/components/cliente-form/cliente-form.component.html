@@ -1,0 +1,50 @@
+<h2 mat-dialog-title>{{ data ? 'Editar Cliente' : 'Crear Cliente' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <mat-dialog-content class="mat-typography">
+    <mat-form-field appearance="outline">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="nombre" required>
+      <mat-error *ngIf="form.get('nombre')?.hasError('required') && form.get('nombre')?.touched">
+        El nombre es requerido
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Apellido</mat-label>
+      <input matInput formControlName="apellido">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Teléfono</mat-label>
+      <input matInput type="tel" formControlName="telefono" required placeholder="Ej. 5512345678">
+      <mat-error *ngIf="form.get('telefono')?.hasError('required') && form.get('telefono')?.touched">
+        El teléfono es requerido
+      </mat-error>
+      <mat-error *ngIf="form.get('telefono')?.hasError('pattern') && form.get('telefono')?.touched">
+        El teléfono debe tener 10 dígitos
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="email" required>
+      <mat-error *ngIf="form.get('email')?.hasError('required') && form.get('email')?.touched">
+        El email es requerido
+      </mat-error>
+      <mat-error *ngIf="form.get('email')?.hasError('email') && form.get('email')?.touched">
+        Ingrese un email válido
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Dirección</mat-label>
+      <textarea matInput formControlName="direccion" rows="3"></textarea>
+    </mat-form-field>
+
+    </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="onCancel()">Cancelar</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Guardar</button>
+  </mat-dialog-actions>
+</form>

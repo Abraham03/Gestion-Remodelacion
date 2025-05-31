@@ -1,0 +1,22 @@
+<app-header (toggleSidebarEvent)="onToggleSidebar()"></app-header>
+
+<mat-sidenav-container class="app-sidenav-container">
+  <mat-sidenav
+    #sidenav
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="(isSidebarOpen$ | async)"
+    [fixedInViewport]="true" [fixedTopGap]="64"
+    [class.sidebar-closed]="!(isSidebarOpen$ | async) && !(isHandset$ | async)"
+  >
+    <app-sidebar [isSidebarOpen]="(isSidebarOpen$ | async) ?? true"></app-sidebar>
+  </mat-sidenav>
+  <mat-sidenav-content
+    class="app-sidenav-content"
+    >
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+<app-footer></app-footer>
