@@ -63,7 +63,6 @@ gestion-remodelacion
 │  │  │  │  ├─ models
 │  │  │  │  │  └─ cliente.model.ts
 │  │  │  │  └─ services
-│  │  │  │     ├─ cliente.service.spec.ts
 │  │  │  │     └─ cliente.service.ts
 │  │  │  ├─ costos
 │  │  │  │  ├─ components
