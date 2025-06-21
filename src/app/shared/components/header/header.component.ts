@@ -35,7 +35,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   isAuthenticated: boolean = false;
   userName: string | null = null;
-  // userRole: string | null = null; // Removed, as you only want name/roles in sidebar or less prominent
+  userRole: string | null = null; // Removed, as you only want name/roles in sidebar or less prominent
 
   private subscriptions = new Subscription();
 
@@ -49,8 +49,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       toObservable(this.authService.currentUser).subscribe(user => {
         this.userName = user ? user.username : null;
-        // If you still want to display role in header, uncomment and format it here
-        // this.userRole = user && user.authorities && user.authorities.length > 0 ? String(user.authorities[0]).replace('ROLE_', '') : null;
+         this.userRole = user && user.authorities && user.authorities.length > 0 ? String(user.authorities[0]).replace('ROLE_', '') : null;
       })
     );
   }
@@ -63,10 +62,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.toggleSidebarEvent.emit();
   }
 
-  // Removed onProfile() method as it's no longer needed
-  // onProfile() {
-  //   this.router.navigate(['/profile']);
-  // }
 
   onLogout() {
     this.authService.logout();

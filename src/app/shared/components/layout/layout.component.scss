@@ -1,4 +1,6 @@
-// Original variables - keep these
+/* src/app/shared/components/layout/layout.component.scss */
+
+/* Original variables - keep these */
 :root {
   --header-height-desktop: 64px;
   --header-height-mobile: 56px;
@@ -8,39 +10,68 @@
   --sidebar-width-closed: 70px;
 }
 
+// REMOVER: .app-layout-wrapper y su lógica de grid. Ya no es necesaria.
+// display: grid;
+// grid-template-areas:
+//   "header header"
+//   "sidebar content"
+//   "footer footer";
+// grid-template-rows: var(--header-height-desktop) 1fr var(--footer-height-desktop);
+// grid-template-columns: var(--sidebar-width-open) 1fr;
+// height: 100vh;
+// overflow: hidden;
+// @media (max-width: 600px) { ... }
+// .app-layout-wrapper.sidebar-closed-desktop { ... }
+
+// El `body` (o el `app-root`) debería tener 100% de altura
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif; // Asegúrate que tu fuente esté definida aquí o globalmente
+}
+
 .app-sidenav-container {
-  height: calc(100vh - var(--header-height-desktop) - var(--footer-height-desktop));
-  margin-top: var(--header-height-desktop);
-  margin-bottom: var(--footer-height-desktop);
+  // OCUPARÁ EL ESPACIO ENTRE EL HEADER Y EL FOOTER
+  // margin-top y margin-bottom controlan el desplazamiento para dejar espacio
+  margin-top: var(--header-height-desktop); /* Agrega el espacio para el header fijo */
+  margin-bottom: var(--footer-height-desktop); /* Agrega el espacio para el footer fijo */
+  height: calc(100vh - var(--header-height-desktop) - var(--footer-height-desktop)); /* Calcula la altura para el contenido */
   background-color: #f0f2f5;
 
   @media (max-width: 600px) {
-    height: calc(100vh - var(--header-height-mobile) - var(--footer-height-mobile));
     margin-top: var(--header-height-mobile);
     margin-bottom: var(--footer-height-mobile);
+    height: calc(100vh - var(--header-height-mobile) - var(--footer-height-mobile));
   }
 }
 
-mat-sidenav {
-  width: var(--sidebar-width-open); // This sets the open width
+.app-sidebar { // Clase para el mat-sidenav
+  width: var(--sidebar-width-open); // Esto establece el ancho cuando está abierto
   transition: width 0.3s ease;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
 
   &.sidebar-closed {
-    width: var(--sidebar-width-closed); // This sets the closed width
+    width: var(--sidebar-width-closed); // Esto establece el ancho cuando está cerrado
   }
 
-  &.mat-drawer-opened.mat-drawer-over {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  }
+  // Comentar o eliminar si no necesitas un shadow diferente al abrir en modo 'over'
+  // &.mat-drawer-opened.mat-drawer-over {
+  //   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  // }
 }
 
-
+.app-sidenav-content {
+  // Asegurarse que el contenido dentro del sidenav-content ocupe toda la altura
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
 
 .main-content {
   padding: 24px;
-  min-height: 100%;
-  box-sizing: border-box;
+  flex-grow: 1; /* Permite que el contenido crezca para llenar el espacio vertical */
+  overflow-y: auto; /* Permite el scroll solo dentro del contenido principal */
+  box-sizing: border-box; // Asegura que el padding no afecte el cálculo del ancho/alto
 
   @media (max-width: 600px) {
     padding: 16px;
