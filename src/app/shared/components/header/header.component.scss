@@ -1,3 +1,5 @@
+/* src/app/shared/components/header/header.component.scss */
+
 mat-toolbar {
   position: fixed;
   top: 0;
@@ -23,12 +25,52 @@ mat-toolbar {
   .user-info-display {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 8px; /* Mantener el gap entre el bloque de usuario y el botón de perfil */
+  }
 
-    .username-display {
-      font-weight: 500;
+  .user-details-hover { /* AGREGADO: Contenedor para el nombre de usuario y el tooltip */
+    position: relative; /* Necesario para posicionar el tooltip de forma absoluta */
+    display: flex;
+    align-items: center; /* Centra el nombre verticalmente si hay múltiples elementos */
+    cursor: pointer; /* Indica que el elemento es interactivo */
+    padding: 4px 8px; /* Añade un poco de relleno para mejorar el área de interacción */
+    border-radius: 4px; /* Bordes redondeados para el área de hover */
+    transition: background-color 0.2s ease; /* Transición suave para el fondo al hacer hover */
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1); /* Fondo ligero al pasar el cursor */
     }
   }
+
+  .username-display {
+    font-weight: 500;
+    font-size: 0.95em; // Ajuste de tamaño para que quepa mejor
+    white-space: nowrap; // Evita que el nombre se rompa en varias líneas
+  }
+
+  .user-role-tooltip { /* AGREGADO: Estilos para el tooltip del rol */
+    position: absolute;
+    bottom: -30px; // Posicionarlo inicialmente debajo del nombre
+    left: 50%;
+    transform: translateX(-50%); // Centrar horizontalmente el tooltip
+    background-color: rgba(0, 0, 0, 0.8); // Fondo oscuro semi-transparente
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75em;
+    white-space: nowrap; // Evita que el rol se rompa en varias líneas
+    opacity: 0; // Oculto por defecto
+    visibility: hidden; // Oculto para accesibilidad y para que no interfiera con eventos de ratón
+    transition: opacity 0.2s ease, visibility 0.2s ease, bottom 0.2s ease; // Transiciones suaves
+    z-index: 1001; // Asegura que esté por encima del header
+  }
+
+  .user-details-hover:hover .user-role-tooltip { /* AGREGADO: Efecto al hacer hover */
+    opacity: 1; // Mostrar al pasar el cursor
+    visibility: visible; // Hacer visible el tooltip
+    bottom: -24px; // Ligeramente más arriba en el hover para un efecto de "pop"
+  }
+
 
   /* Ajustes para pantallas pequeñas */
   @media (max-width: 600px) {
@@ -42,7 +84,7 @@ mat-toolbar {
     }
 
     .hide-on-mobile {
-      display: none; // Ocultar el nombre de usuario en pantallas pequeñas
+      display: none; // Ocultar el bloque completo de usuario en pantallas pequeñas
     }
   }
 

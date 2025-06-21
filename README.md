@@ -64,16 +64,6 @@ gestion-remodelacion
 │  │  │  │  │  └─ cliente.model.ts
 │  │  │  │  └─ services
 │  │  │  │     └─ cliente.service.ts
-│  │  │  ├─ costos
-│  │  │  │  ├─ components
-│  │  │  │  │  └─ costo-list
-│  │  │  │  │     ├─ costo-list.component.css
-│  │  │  │  │     ├─ costo-list.component.html
-│  │  │  │  │     └─ costo-list.component.ts
-│  │  │  │  ├─ models
-│  │  │  │  │  └─ costo.model.ts
-│  │  │  │  └─ services
-│  │  │  │     └─ costo.service.ts
 │  │  │  ├─ dashboard
 │  │  │  │  ├─ components
 │  │  │  │  │  └─ dashboard
@@ -99,20 +89,6 @@ gestion-remodelacion
 │  │  │  │  │  └─ empleado.model.ts
 │  │  │  │  └─ services
 │  │  │  │     └─ empleado.service.ts
-│  │  │  ├─ materiales
-│  │  │  │  ├─ components
-│  │  │  │  │  ├─ material-form
-│  │  │  │  │  │  ├─ material-form.component.html
-│  │  │  │  │  │  ├─ material-form.component.scss
-│  │  │  │  │  │  └─ material-form.component.ts
-│  │  │  │  │  └─ material-list
-│  │  │  │  │     ├─ material-list.component.html
-│  │  │  │  │     ├─ material-list.component.scss
-│  │  │  │  │     └─ material-list.component.ts
-│  │  │  │  ├─ models
-│  │  │  │  │  └─ material.model.ts
-│  │  │  │  └─ services
-│  │  │  │     └─ material.service.ts
 │  │  │  ├─ proyectos
 │  │  │  │  ├─ components
 │  │  │  │  │  ├─ proyecto-form

@@ -14,7 +14,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout'; // Import
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [MatListModule, MatIconModule, RouterModule, CommonModule, TitleCasePipe],
+  imports: [MatListModule, MatIconModule, RouterModule, CommonModule],
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
 })

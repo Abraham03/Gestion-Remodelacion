@@ -6,7 +6,10 @@
   <span class="spacer"></span>
 
   <div class="user-info-display" *ngIf="isAuthenticated">
-    <span class="username-display mat-body-1 hide-on-mobile">{{ userName }}</span>
+    <div class="user-details-hover hide-on-mobile">
+      <span class="username-display mat-body-1">{{ userName }}</span>
+      <span class="user-role-tooltip mat-caption">{{ userRole | titlecase }}</span>
+    </div>
     <button mat-icon-button [matMenuTriggerFor]="userMenu">
       <mat-icon>account_circle</mat-icon>
     </button>

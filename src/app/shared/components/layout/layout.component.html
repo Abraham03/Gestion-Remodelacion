@@ -5,14 +5,13 @@
     #sidenav
     [mode]="(isHandset$ | async) ? 'over' : 'side'"
     [opened]="(isSidebarOpen$ | async)"
-    [fixedInViewport]="true" [fixedTopGap]="64"
+    class="app-sidebar"
     [class.sidebar-closed]="!(isSidebarOpen$ | async) && !(isHandset$ | async)"
-  >
+    [fixedInViewport]="true"             [fixedTopGap]="(isHandset$ | async) ? 56 : 64" [fixedBottomGap]="(isHandset$ | async) ? 48 : 64" >
     <app-sidebar [isSidebarOpen]="(isSidebarOpen$ | async) ?? true"></app-sidebar>
   </mat-sidenav>
-  <mat-sidenav-content
-    class="app-sidenav-content"
-    >
+
+  <mat-sidenav-content class="app-sidenav-content">
     <main class="main-content">
       <router-outlet></router-outlet>
     </main>
