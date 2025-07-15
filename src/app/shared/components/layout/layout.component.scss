@@ -1,5 +1,3 @@
-/* src/app/shared/components/layout/layout.component.scss */
-
 /* Original variables - keep these */
 :root {
   --header-height-desktop: 64px;
@@ -10,18 +8,6 @@
   --sidebar-width-closed: 70px;
 }
 
-// REMOVER: .app-layout-wrapper y su lógica de grid. Ya no es necesaria.
-// display: grid;
-// grid-template-areas:
-//   "header header"
-//   "sidebar content"
-//   "footer footer";
-// grid-template-rows: var(--header-height-desktop) 1fr var(--footer-height-desktop);
-// grid-template-columns: var(--sidebar-width-open) 1fr;
-// height: 100vh;
-// overflow: hidden;
-// @media (max-width: 600px) { ... }
-// .app-layout-wrapper.sidebar-closed-desktop { ... }
 
 // El `body` (o el `app-root`) debería tener 100% de altura
 html, body {
@@ -31,7 +17,6 @@ html, body {
 }
 
 .app-sidenav-container {
-  // OCUPARÁ EL ESPACIO ENTRE EL HEADER Y EL FOOTER
   // margin-top y margin-bottom controlan el desplazamiento para dejar espacio
   margin-top: var(--header-height-desktop); /* Agrega el espacio para el header fijo */
   margin-bottom: var(--footer-height-desktop); /* Agrega el espacio para el footer fijo */
@@ -53,11 +38,6 @@ html, body {
   &.sidebar-closed {
     width: var(--sidebar-width-closed); // Esto establece el ancho cuando está cerrado
   }
-
-  // Comentar o eliminar si no necesitas un shadow diferente al abrir en modo 'over'
-  // &.mat-drawer-opened.mat-drawer-over {
-  //   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  // }
 }
 
 .app-sidenav-content {

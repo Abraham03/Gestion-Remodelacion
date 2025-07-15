@@ -9,7 +9,7 @@ mat-nav-list {
     // Add this for better icon alignment when text is hidden
     justify-content: flex-start;
     gap: 8px;
-    height: 48px;
+    height: 40px;
     padding: 0 16px;
     border-radius: 4px;
     transition: background-color 0.2s ease, color 0.2s ease; // Smooth transitions
@@ -30,7 +30,7 @@ mat-nav-list {
     margin-right: 16px;
     // For closed sidebar, align icon to center
     // This assumes mat-list-icon will handle it, but can be explicit if needed
-    // transition: margin-right 0.3s ease; // Add transition for icon margin
+     transition: margin-right 0.3s ease; // Add transition for icon margin
   }
 }
 

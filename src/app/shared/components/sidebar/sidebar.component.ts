@@ -50,7 +50,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
     const user = this.authService.currentUser();
     if (user) {
       this.userName = user.username;
-      // Ensure userRole is correctly extracted, handling cases where authorities might be empty or not strings
       this.userRole = user.authorities && user.authorities.length > 0 ? String(user.authorities[0]).replace('ROLE_', '') : null;
     } else {
       this.userName = null;
