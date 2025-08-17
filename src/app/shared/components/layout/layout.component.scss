@@ -1,59 +1,68 @@
-/* Original variables - keep these */
-:root {
-  --header-height-desktop: 64px;
-  --header-height-mobile: 56px;
-  --footer-height-desktop: 64px;
-  --footer-height-mobile: 48px;
-  --sidebar-width-open: 250px;
-  --sidebar-width-closed: 70px;
-}
+/* src/app/shared/components/layout/layout.component.scss */
 
+// ✅ CAMBIO: Se reemplaza @import por @use y se asignan alias.
+@use '../../../../styles/abstracts/variables' as vars;
+@use '../../../../styles/abstracts/mixins' as mixins;
+@use '../../../../styles/base/base';
 
-// El `body` (o el `app-root`) debería tener 100% de altura
-html, body {
-  height: 100%;
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif; // Asegúrate que tu fuente esté definida aquí o globalmente
-}
+.app-layout-wrapper {
+  display: flex;
+  min-height: 100vh;
+  // ✅ CAMBIO: Se prefijan todas las variables y mixins.
+  background-color: vars.$color-background;
 
-.app-sidenav-container {
-  // margin-top y margin-bottom controlan el desplazamiento para dejar espacio
-  margin-top: var(--header-height-desktop); /* Agrega el espacio para el header fijo */
-  margin-bottom: var(--footer-height-desktop); /* Agrega el espacio para el footer fijo */
-  height: calc(100vh - var(--header-height-desktop) - var(--footer-height-desktop)); /* Calcula la altura para el contenido */
-  background-color: #f0f2f5;
-
-  @media (max-width: 600px) {
-    margin-top: var(--header-height-mobile);
-    margin-bottom: var(--footer-height-mobile);
-    height: calc(100vh - var(--header-height-mobile) - var(--footer-height-mobile));
+  @include mixins.respond-to(mobile) {
+    flex-direction: column;
   }
 }
 
-.app-sidebar { // Clase para el mat-sidenav
-  width: var(--sidebar-width-open); // Esto establece el ancho cuando está abierto
+.app-sidenav-container-main {
+  width: vars.$sidebar-width-open;
   transition: width 0.3s ease;
+  flex-shrink: 0;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
 
   &.sidebar-closed {
-    width: var(--sidebar-width-closed); // Esto establece el ancho cuando está cerrado
+    width: auto;
+    transition: width 0.8s ease;
+  }
+
+  @include mixins.respond-to(mobile) {
+    width: 0;
+    &[aria-hidden='true'] {
+      width: 0;
+    }
+  }
+
+  mat-sidenav {
+    width: 100%;
+    height: 100%;
+    
+    @include mixins.respond-to(mobile) {
+      width: 50%;
+      max-width: 250px;
+    }
+  }
+
+  mat-sidenav-content {
+    display: none;
   }
 }
 
-.app-sidenav-content {
-  // Asegurarse que el contenido dentro del sidenav-content ocupe toda la altura
+.app-content-area {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  flex-grow: 1;
+  background-color: vars.$color-background;
 }
 
-.main-content {
-  padding: 24px;
-  flex-grow: 1; /* Permite que el contenido crezca para llenar el espacio vertical */
-  overflow-y: auto; /* Permite el scroll solo dentro del contenido principal */
-  box-sizing: border-box; // Asegura que el padding no afecte el cálculo del ancho/alto
+.main-content-area {
+  flex-grow: 1;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: vars.$spacing-m;
 
-  @media (max-width: 600px) {
-    padding: 16px;
+  @include mixins.respond-to(mobile) {
+    padding: vars.$spacing-s;
   }
 }

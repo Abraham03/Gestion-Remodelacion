@@ -21,21 +21,16 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
 
   const token = auth.getToken();
   
-  // Si no hay token o es inválido, redirigir a login
-  if (!token || !auth.isTokenValid(token)) {
-    auth.logout();
-    router.navigate(['login'], { 
-      queryParams: { expired: 'true' } 
-    });
-    return EMPTY;
-  }
+ let authReq = req;
 
-  // Clonar la petición con el token
-  const authReq = addTokenToRequest(req, token);
+   if (token) { // Only add Authorization header if a token exists
+    authReq = addTokenToRequest(req, token);
+  }
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
       // Manejar error 401 (No autorizado)
+      // If it's a 401 AND not a refresh token request itself (to avoid infinite loop)
       if (error.status === 401 && !req.url.includes('auth/refresh')) {
         return handleUnauthorizedError(req, next, auth, router);
       }
@@ -74,14 +69,19 @@ function handleUnauthorizedError(
 
 Observable<HttpEvent<unknown>> {
   // Intento de renovación silenciosa
+  console.warn('JWTInterceptor: 401 Unauthorized. Attempting token refresh...'); // Add log
   return auth.refreshToken().pipe(
     switchMap(() => {
       const newToken = auth.getToken();
-      if (!newToken) throw new Error('Token renewal failed');
+      if (!newToken) {
+        console.error('JWTInterceptor: Token renewal failed, no new token. Logging out.'); // Add log
+        throw new Error('Token renewal failed'); // Propagate error to trigger catchError below
+      }
+      console.log('JWTInterceptor: Token refreshed successfully. Retrying original request.'); // Add log
       return next(addTokenToRequest(req, newToken));
     }),
-    catchError(() => {
-      // Redirigir solo si falla la renovación
+    catchError((refreshError) => {
+      console.error('JWTInterceptor: Refresh token failed. Redirecting to login.', refreshError); // Add log
       auth.logout();
       router.navigate(['/login'], { 
         state: { sessionExpired: true } 

@@ -1,51 +1,55 @@
-.empleado-list {
-  padding: 1rem;
-  margin-bottom: 4rem;
+/* src/app/modules/empleados/components/empleado-list/empleado-list.component.scss */
 
-  h1 {
-    font-size: clamp(1.5rem, 5vw, 2.5rem);
-    color: #3f51b5;
-    text-align: center;
-    margin-bottom: 1rem;
-    margin-top: 3rem;
+// Se utilizan los módulos globales con alias
+@use '../../../../../styles/abstracts/mixins' as mixins;
+@use '../../../../../styles/abstracts/variables' as vars;
+@use '../../../../../styles/components/tables';
+@use '../../../../../styles/base/base';
+
+// Estilos específicos del componente de lista de empleados
+.active-icon {
+  color: green;
+}
+
+.inactive-icon {
+  color: red;
+}
+
+// Ocultar la columna de 'teléfono' en móvil
+@include mixins.respond-to(mobile) {
+  .mat-column-telefonoContacto {
+    display: none;
   }
+}
 
-  button {
-    margin-bottom: 1rem;
-  }
+// Asegurarse de que el filtro tenga un ancho responsivo
+.filter-field {
+  width: 100%;
+  max-width: 300px;
+}
 
-  .table-container {
-    overflow-x: auto;
-  }
+.mat-column-nombreCompleto {
+  font-weight: 500;
+  color: vars.$color-primary;
+}
 
-  table {
-    width: 100%;
-    min-width: 600px;
-  }
+.table-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: vars.$spacing-s;
 
-  .active {
-    color: green;
-  }
-
-  .inactive {
-    color: red;
-  }
-
-  mat-paginator {
-    margin-top: 1rem;
-  }
-
-  @media (max-width: 600px) {
-    h1 {
-      font-size: 1.25rem;
-    }
-
-    button {
-      width: 100%;
-    }
-
-    table {
-      min-width: 600px; /* Permite el desplazamiento horizontal en móviles */
+  @include mixins.respond-to(mobile) {
+    // Para el div que contiene los botones
+    &.table-actions {
+      flex-direction: column; // Apila los botones en una columna
+      width: 100%; // Ocupa todo el ancho disponible
+      
+      // Ajusta los botones para que ocupen todo el ancho
+      button {
+        width: 100%;
+      }
     }
   }
 }

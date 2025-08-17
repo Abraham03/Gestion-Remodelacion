@@ -69,7 +69,7 @@ export class LoginComponent {
     this.auth.login({ username, password }).subscribe({
       next: () => {
         this.snackBar.open('Bienvenido', 'Cerrar', { duration: 3000 });
-        this.router.navigateByUrl(this.returnUrl);
+       // this.router.navigateByUrl(this.returnUrl);
       },
       error: (err) => {
         this.isLoading = false;

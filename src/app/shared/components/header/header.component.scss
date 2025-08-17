@@ -1,97 +1,91 @@
 /* src/app/shared/components/header/header.component.scss */
 
+// ✅ CAMBIO: Se reemplaza @import por @use y se asignan alias.
+@use '../../../../styles/abstracts/variables' as vars;
+@use '../../../../styles/abstracts/mixins' as mixins;
+
 mat-toolbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  // ✅ CAMBIO: Se prefijan todas las variables y mixins.
+  height: vars.$header-height-desktop;
+  box-shadow: vars.$box-shadow-s;
   z-index: 1000;
-  height: 64px; // Altura estándar para desktop
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); // Sombra sutil
+  display: flex;
+  align-items: center;
+  //background-color: vars.$color-surface; // Se añade color de fondo para consistencia
 
-  .spacer {
-    flex: 1;
+  @include mixins.respond-to(mobile) {
+    height: vars.$header-height-mobile;
   }
+}
 
-  .title {
-    font-size: 20px;
-    font-weight: 500;
-    margin-left: 16px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.title {
+  margin-left: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-grow: 1;
+
+
+
+  @include mixins.respond-to(mobile) {
+    margin-left: 8px;
+    font-size: 14px;
   }
+}
 
-  .user-info-display {
-    display: flex;
-    align-items: center;
-    gap: 8px; /* Mantener el gap entre el bloque de usuario y el botón de perfil */
-  }
+.spacer {
+  flex: 1 1 auto;
+}
 
-  .user-details-hover { /* AGREGADO: Contenedor para el nombre de usuario y el tooltip */
-    position: relative; /* Necesario para posicionar el tooltip de forma absoluta */
-    display: flex;
-    align-items: center; /* Centra el nombre verticalmente si hay múltiples elementos */
-    cursor: pointer; /* Indica que el elemento es interactivo */
-    padding: 4px 8px; /* Añade un poco de relleno para mejorar el área de interacción */
-    border-radius: 4px; /* Bordes redondeados para el área de hover */
-    transition: background-color 0.2s ease; /* Transición suave para el fondo al hacer hover */
+.user-info-display {
+  display: flex;
+  align-items: center;
+  padding-right: 8px;
+}
 
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.1); /* Fondo ligero al pasar el cursor */
-    }
-  }
+.user-details-hover {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  margin-right: 16px;
 
   .username-display {
     font-weight: 500;
-    font-size: 0.95em; // Ajuste de tamaño para que quepa mejor
-    white-space: nowrap; // Evita que el nombre se rompa en varias líneas
+    line-height: 1.2;
+  @include mixins.respond-to(mobile) {
+    margin-left: 8px;
+    font-size: 14px;
   }
 
-  .user-role-tooltip { /* AGREGADO: Estilos para el tooltip del rol */
-    position: absolute;
-    bottom: -30px; // Posicionarlo inicialmente debajo del nombre
-    left: 50%;
-    transform: translateX(-50%); // Centrar horizontalmente el tooltip
-    background-color: rgba(0, 0, 0, 0.8); // Fondo oscuro semi-transparente
-    color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.75em;
-    white-space: nowrap; // Evita que el rol se rompa en varias líneas
-    opacity: 0; // Oculto por defecto
-    visibility: hidden; // Oculto para accesibilidad y para que no interfiera con eventos de ratón
-    transition: opacity 0.2s ease, visibility 0.2s ease, bottom 0.2s ease; // Transiciones suaves
-    z-index: 1001; // Asegura que esté por encima del header
   }
 
-  .user-details-hover:hover .user-role-tooltip { /* AGREGADO: Efecto al hacer hover */
-    opacity: 1; // Mostrar al pasar el cursor
-    visibility: visible; // Hacer visible el tooltip
-    bottom: -24px; // Ligeramente más arriba en el hover para un efecto de "pop"
+  .user-role-tooltip {
+    line-height: 1.2;
+    color: rgba(255, 255, 255, 0.8); 
+  }
+}
+
+.menu-header {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #f5f5f5;
+
+  .mat-icon {
+    align-self: flex-start;
+    margin-bottom: 8px;
   }
 
-
-  /* Ajustes para pantallas pequeñas */
-  @media (max-width: 600px) {
-    height: 56px; // Altura reducida en móviles
-    padding: 0 8px;
-
-    .title {
-      font-size: 18px;
-      margin-left: 8px;
-      max-width: 150px; // Limitar el ancho en móviles
-    }
-
-    .hide-on-mobile {
-      display: none; // Ocultar el bloque completo de usuario en pantallas pequeñas
-    }
+  .mat-body-1 {
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.87);
   }
 
-  /* Pantallas muy pequeñas */
-  @media (max-width: 400px) {
-    .title {
-      max-width: 100px;
-    }
+  .mat-caption {
+    color: rgba(0, 0, 0, 0.54);
+    line-height: 1.2;
   }
 }

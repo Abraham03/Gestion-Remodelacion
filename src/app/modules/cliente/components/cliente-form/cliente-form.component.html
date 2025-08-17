@@ -1,50 +1,41 @@
 <h2 mat-dialog-title>{{ data ? 'Editar Cliente' : 'Crear Cliente' }}</h2>
 
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <mat-dialog-content class="mat-typography">
-    <mat-form-field appearance="outline">
+  <mat-dialog-content class="mat-typography form-content">
+    
+    <mat-form-field appearance="outline" class="full-width">
       <mat-label>Nombre</mat-label>
-      <input matInput formControlName="nombre" required>
-      <mat-error *ngIf="form.get('nombre')?.hasError('required') && form.get('nombre')?.touched">
+      <input matInput formControlName="nombreCliente" required>
+      <mat-error *ngIf="form.get('nombreCliente')?.hasError('required')">
         El nombre es requerido
       </mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Apellido</mat-label>
-      <input matInput formControlName="apellido">
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="full-width">
       <mat-label>Teléfono</mat-label>
-      <input matInput type="tel" formControlName="telefono" required placeholder="Ej. 5512345678">
-      <mat-error *ngIf="form.get('telefono')?.hasError('required') && form.get('telefono')?.touched">
+      <input matInput type="tel" formControlName="telefonoContacto" required placeholder="Ej. 5512345678">
+      <mat-error *ngIf="form.get('telefonoContacto')?.hasError('required')">
         El teléfono es requerido
       </mat-error>
-      <mat-error *ngIf="form.get('telefono')?.hasError('pattern') && form.get('telefono')?.touched">
+      <mat-error *ngIf="form.get('telefonoContacto')?.hasError('pattern')">
         El teléfono debe tener 10 dígitos
       </mat-error>
     </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Email</mat-label>
-      <input matInput type="email" formControlName="email" required>
-      <mat-error *ngIf="form.get('email')?.hasError('required') && form.get('email')?.touched">
-        El email es requerido
-      </mat-error>
-      <mat-error *ngIf="form.get('email')?.hasError('email') && form.get('email')?.touched">
-        Ingrese un email válido
-      </mat-error>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
+    
+    <mat-form-field appearance="outline" class="full-width">
       <mat-label>Dirección</mat-label>
-      <textarea matInput formControlName="direccion" rows="3"></textarea>
+      <textarea matInput formControlName="direccion" cdkTextareaAutosize cdkAutosizeMinRows="3" cdkAutosizeMaxRows="5"></textarea>
     </mat-form-field>
 
-    </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <button mat-button type="button" (click)="onCancel()">Cancelar</button>
-    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Guardar</button>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Notas adicionales</mat-label>
+      <textarea matInput formControlName="notas" cdkTextareaAutosize cdkAutosizeMinRows="3" cdkAutosizeMaxRows="5"></textarea>
+    </mat-form-field>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="form-actions">
+    <button mat-flat-button color="warn" type="button" (click)="onCancel()">Cancelar</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">Guardar</button>
   </mat-dialog-actions>
 </form>

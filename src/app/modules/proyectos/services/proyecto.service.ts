@@ -1,20 +1,58 @@
 // src/app/modules/proyectos/services/proyectos.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { map, Observable } from 'rxjs';
 import { Proyecto } from '../models/proyecto.model';
 import { environment } from '../../../../environments/environment';
+import { Page } from '../../../core/models/page.model';
+import { DropdownItem } from '../../../core/models/dropdown-item.model';
+import { BaseService } from '../../../core/services/base.service';
+import { ApiResponse } from '../../../core/models/ApiResponse';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ProyectosService {
-  private apiUrl = `${environment.apiUrl}/proyectos`;
+export class ProyectosService extends BaseService<Proyecto> {
 
-  constructor(private http: HttpClient) {}
+  constructor(http: HttpClient) {
+    super(http, `${environment.apiUrl}/proyectos`);
+  }
 
-  getProyectos(): Observable<Proyecto[]> {
-    return this.http.get<Proyecto[]>(this.apiUrl);
+  getProyectosPaginated(
+    page: number = 0,
+    size: number = 5,
+    filter: string,
+    sort: string = 'nombreProyecto,asc'
+  ): Observable<Page<Proyecto>> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString())
+      .set('sort', sort); // Usar el nuevo parámetro
+
+    if (filter) {
+      params = params.set('filter', filter);
+    }
+    return this.http.get<ApiResponse<Page<Proyecto>>>(this.apiUrl, { params }).pipe(
+      map(response => this.extractPageData(response))
+    );
+  }
+
+  // Nuevo método para obtener una lista simplificada de proyectos para dropdowns
+  getProyectosForDropdown(): Observable<DropdownItem[]> {
+    const params = new HttpParams()
+      .set('size', '1000')
+      .set('sort', 'nombreProyecto,asc'); // Pide un tamaño grande y ordena
+
+    return this.http
+      .get<Page<Proyecto>>(`${this.apiUrl}`, { params })
+      .pipe(
+        map((page: Page<Proyecto>) =>
+          page.content.map((proj: Proyecto) => ({
+            id: proj.id!,
+            nombre: proj.nombreProyecto,
+          }))
+        )
+      );
   }
 
   getProyectoById(id: number): Observable<Proyecto> {
@@ -42,7 +80,10 @@ export class ProyectosService {
     delete projectToSend.nombreEmpleadoResponsable; // Backend might regenerate/re-fetch this
     delete projectToSend.fechaCreacion; // This field is usually immutable after creation
 
-    return this.http.put<Proyecto>(`${this.apiUrl}/${proyecto.id}`, projectToSend);
+    return this.http.put<Proyecto>(
+      `${this.apiUrl}/${proyecto.id}`,
+      projectToSend
+    );
   }
 
   deleteProyecto(id: number): Observable<void> {

@@ -6,40 +6,54 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import { Page } from '../../../core/models/page.model';
 import { Cliente } from '../models/cliente.model'; // Assuming Cliente model exists
+import { ApiResponse } from '../../../core/models/ApiResponse';
+import { BaseService } from '../../../core/services/base.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ClienteService {
-  private apiUrl = `${environment.apiUrl}/clientes`;
-
-  constructor(private http: HttpClient) {}
-
-  // Method to get all clients for a dropdown (only ID and name)
-  getClientesForDropdown(): Observable<{ id: number; nombre: string }[]> {
-    // IMPORTANT: If your default /clientes endpoint is paginated, you need to
-    // either request all items or target a specific "all" endpoint.
-    // For now, let's assume it returns a Page object and extract 'content'.
-    // Adding a large 'size' parameter is a common workaround if no specific '/all' endpoint exists.
-    const params = new HttpParams().set('size', '1000'); // Request a large number of items
-
-    return this.http.get<Page<Cliente>>(`${this.apiUrl}`, { params }).pipe( // <-- Type as Page<Cliente> here
-      map(page => page.content.map(cliente => ({ id: cliente.id!, nombre: cliente.nombreCliente }))) // <-- Access page.content
-    );
+export class ClienteService extends BaseService<Cliente> {
+  constructor(http: HttpClient) {
+    super(http, `${environment.apiUrl}/clientes`);
+  }
+  
+  getApiUrl(): string {
+    return this.apiUrl;
   }
 
-
   // If you need pagination and search for a full client list
-  getClientes(page: number = 0, size: number = 10, sort: string = 'nombreCliente', filter: string = ''): Observable<Page<Cliente>> {
+  getClientes(
+    page: number = 0,
+    size: number = 5,
+    filter: string = '',
+    sort: string = 'nombreCliente,asc'
+  ): Observable<Page<Cliente>> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString())
       .set('sort', sort);
-
     if (filter) {
       params = params.set('filter', filter);
     }
-    return this.http.get<Page<Cliente>>(this.apiUrl, { params });
+    return this.http.get<ApiResponse<Page<Cliente>>>(this.apiUrl, { params }).pipe(
+      map(response => this.extractPageData(response))
+    );
+  }
+
+  // Method to get all clients for a dropdown (only ID and name)
+  getClientesForDropdown(): Observable<{ id: number; nombre: string }[]> {
+    const params = new HttpParams().set('size', '1000'); // Request a large number of items
+    return this.http
+      .get<Page<Cliente>>(`${this.apiUrl}`, { params })
+      .pipe(
+        // <-- Type as Page<Cliente> here
+        map((response: Page<Cliente>) =>
+          response.content.map((cliente: Cliente) => ({
+            id: cliente.id!,
+            nombre: cliente.nombreCliente,
+          }))
+        )
+      );
   }
 
   getCliente(id: number): Observable<Cliente> {

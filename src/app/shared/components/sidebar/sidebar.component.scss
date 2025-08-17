@@ -1,78 +1,113 @@
-// src/app/shared/components/sidebar/sidebar.component.scss
+/* src/app/shared/components/sidebar/sidebar.component.scss */
 
-mat-nav-list {
-  padding-top: 20px; // Espacio para la información del usuario
+// ✅ CAMBIO: Se reemplaza @import por @use y se asignan alias.
+@use '../../../../styles/abstracts/variables' as vars;
+@use '../../../../styles/abstracts/mixins' as mixins;
 
-  a {
-    display: flex;
-    align-items: center;
-    // Add this for better icon alignment when text is hidden
-    justify-content: flex-start;
-    gap: 8px;
-    height: 40px;
-    padding: 0 16px;
-    border-radius: 4px;
-    transition: background-color 0.2s ease, color 0.2s ease; // Smooth transitions
+// Contenedor principal del Sidenav
+.sidenav-container {
+  height: 100%;
+}
 
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.04);
-    }
+// Estilos para el componente mat-sidenav
+.sidenav {
+  // ✅ CAMBIO: Se usan variables globales
+  width: vars.$sidebar-width-open;
+  background-color: vars.$color-surface;
+  box-shadow: vars.$box-shadow-m;
+  border-right: none;
+  transition: width 0.3s ease-in-out; // Transición suave para colapsar/expandir
+}
+
+// --- Estilos para el Logo ---
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // ✅ CAMBIO: Se prefijan las variables
+  padding: vars.$spacing-m vars.$spacing-s;
+  height: vars.$header-height-desktop; // Usa la altura del header para consistencia
+  box-sizing: border-box; // Asegura que el padding no afecte la altura total
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+
+  .app-logo {
+    max-width: 130px;
+    transition: opacity 0.3s ease;
   }
-
-  .active {
-    background-color: rgba(0, 0, 0, 0.1);
-    color: #3f51b5;
-    font-weight: 500;
-  }
-
-  // Ensure icon is always visible even when sidebar is closed
-  mat-icon {
-    margin-right: 16px;
-    // For closed sidebar, align icon to center
-    // This assumes mat-list-icon will handle it, but can be explicit if needed
-     transition: margin-right 0.3s ease; // Add transition for icon margin
+  
+  .app-logo-small {
+    display: none; // Oculto por defecto
+    width: 32px;   // Tamaño del logo pequeño
   }
 }
 
-.user-info {
-  display: flex;
-  align-items: center;
-  padding: 16px;
-  background-color: #3f51b5;
-  color: white;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+// --- Estilos para la Lista de Navegación ---
+.nav-list {
+  padding-top: vars.$spacing-s;
+}
 
-  .user-icon {
-    font-size: 48px;
-    width: 48px;
-    height: 48px;
-    margin-right: 16px;
-    // Flex-shrink ensures it doesn't get squeezed too much
-    flex-shrink: 0;
+// Estilos para cada ítem de la lista
+.mat-mdc-list-item {
+  height: 48px;
+  
+  border-radius: vars.$border-radius-m;
+  color: vars.$color-text-secondary;
+  transition: background-color 0.2s ease, color 0.2s ease;
+
+  // Icono dentro del ítem
+  .mat-icon {
+    margin-right: vars.$spacing-xs;
+    color: vars.$color-text-secondary;
+    transition: color 0.2s ease;
   }
 
-  .user-details {
-    display: flex;
-    flex-direction: column;
-    // Allow details to take available space
-    flex-grow: 1;
-    // Hide overflow text with ellipsis if sidebar is too narrow
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-
-    .username {
-      font-weight: 600;
-      font-size: 1.1rem;
-      overflow: hidden;
-      text-overflow: ellipsis;
+  // Estilo al pasar el cursor
+  &:hover {
+    background-color: rgba(vars.$color-primary, 0.05);
+    color: vars.$color-primary;
+    .mat-icon {
+      color: vars.$color-primary;
     }
+  }
 
-    .role {
-      font-size: 0.9rem;
-      opacity: 0.8;
-      overflow: hidden;
-      text-overflow: ellipsis;
+  // Estilo para el ítem activo/seleccionado
+  &.active-nav-item {
+    background-color: vars.$color-primary;
+    color: vars.$color-text-light;
+    font-weight: 500;
+
+    .mat-icon {
+      color: vars.$color-text-light;
+    }
+  }
+}
+
+// --- Estilos para el Estado Colapsado ---
+.sidenav-collapsed {
+  width: vars.$sidebar-width-closed;
+
+  // Ocultamos el texto y solo mostramos el ícono
+  .mat-mdc-list-item .mdc-list-item__content span {
+    display: none;
+  }
+
+  // Centramos el ícono
+  .mat-mdc-list-item .mdc-list-item__content {
+    justify-content: center;
+  }
+  
+  .mat-icon {
+    margin-right: 0;
+  }
+
+  // Ocultamos el logo grande y mostramos el pequeño
+  .logo-container {
+    .app-logo {
+      opacity: 0;
+      display: none;
+    }
+    .app-logo-small {
+      display: block;
     }
   }
 }

@@ -4,9 +4,9 @@ export interface DashboardProyecto {
   nombre: string; // Mapeado de nombreProyecto
   descripcion: string;
   fechaInicio: string;
-  fechaFin: string; // Mapeado de fechaFinEstimada
+  fechaFinEstimada: string; // Mapeado de fechaFinEstimada
   estado: string; // Mapeado de estado original, luego a estadoDisplay
-  progreso: number | null; // <-- CAMBIADO A number | null
+  progresoPorcentaje: number | null; // <-- CAMBIADO A number | null
   estadoDisplay: string; // Para mostrar el estado legible
   // Puedes añadir más propiedades si las necesitas en el dashboard
   // como nombreCliente, nombreEmpleadoResponsable, etc.

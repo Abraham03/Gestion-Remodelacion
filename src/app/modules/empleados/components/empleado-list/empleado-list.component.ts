@@ -1,18 +1,23 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { EmpleadoService } from '../../services/empleado.service';
-import { Empleado } from '../../models/empleado.model';
+import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { EmpleadoFormComponent } from '../empleado-form/empleado-form.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatPaginatorModule, MatPaginator, PageEvent } from '@angular/material/paginator';
+import {
+  MatPaginatorModule,
+  MatPaginator,
+} from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { Page } from '../../../../core/models/page.model';
+
+import { EmpleadoService } from '../../services/empleado.service';
+import { Empleado } from '../../models/empleado.model';
+import { EmpleadoFormComponent } from '../empleado-form/empleado-form.component';
+import { ExportService } from '../../../../core/services/export.service';
+import { Sort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-empleado-list',
@@ -30,65 +35,78 @@ import { Page } from '../../../../core/models/page.model';
   templateUrl: './empleado-list.component.html',
   styleUrls: ['./empleado-list.component.scss'],
 })
-export class EmpleadoListComponent implements OnInit, AfterViewInit {
+export class EmpleadoListComponent implements AfterViewInit {
   empleados: Empleado[] = [];
-  displayedColumns: string[] = ['nombreCompleto', 'rolCargo', 'telefonoContacto', 'activo', 'acciones'];
+  displayedColumns: string[] = [
+    'nombreCompleto',
+    'rolCargo',
+    'telefonoContacto',
+    'costoPorHora',
+    'activo',
+    'fechaContratacion',
+    'notas',
+    'acciones',
+  ];
   dataSource = new MatTableDataSource<Empleado>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   totalElements: number = 0;
-  pageSize: number = 10;
+  pageSize: number = 5;
   currentPage: number = 0;
-  sortColumn: string = 'nombreCompleto';
   filterValue: string = '';
-
+  currentSort: string = 'nombreCompleto';
+  sortDirection: string = 'asc';
   constructor(
     private empleadoService: EmpleadoService,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private exportService: ExportService
   ) {}
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
+    // La suscripción se hace aquí para evitar el error 'Cannot read properties of undefined'
+    this.paginator.page.subscribe(() => this.loadEmpleados());
+    // Carga inicial de datos
     this.loadEmpleados();
   }
 
-  ngAfterViewInit(): void {
-    this.paginator.page.subscribe((event: PageEvent) => {
-      this.currentPage = event.pageIndex;
-      this.pageSize = event.pageSize;
-      this.loadEmpleados();
-    });
-  }
-
   loadEmpleados(): void {
-    // Pass filterValue to the service
-    this.empleadoService.getEmpleados(this.currentPage, this.pageSize, this.sortColumn, this.filterValue).subscribe(
-      (pageData: Page<Empleado>) => {
-        this.empleados = pageData.content;
-        this.dataSource.data = this.empleados;
-        this.totalElements = pageData.totalElements;
-        if (this.paginator) {
-          this.paginator.length = pageData.totalElements;
-          this.paginator.pageIndex = pageData.number;
-          this.paginator.pageSize = pageData.size;
-        }
-      },
-      (error) => {
-        console.error('Error al cargar empleados:', error);
-        this.snackBar.open('Error al cargar los empleados. Inténtalo de nuevo más tarde.', 'Cerrar', { duration: 5000 });
-      }
-    );
+    const sortParam = `${this.currentSort},${this.sortDirection}`;
+    this.empleadoService
+      .getEmpleados(
+        this.paginator.pageIndex,
+        this.paginator.pageSize,
+        this.filterValue,
+        sortParam
+      )
+      .subscribe({
+        next: (response) => {
+            this.dataSource.data = response.content;
+            this.totalElements = response.totalElements;
+
+            this.paginator.length = response.totalElements;
+            this.paginator.pageIndex = response.number;
+            this.paginator.pageSize = response.size;
+          
+        },
+        error: (error) => {
+          console.error('Error al cargar empleados:', error);
+          this.snackBar.open(
+            'Error al cargar los empleados. Inténtalo de nuevo más tarde.',
+            'Cerrar',
+            { duration: 5000 }
+          );
+        },
+      });
   }
 
   applyFilter(event: Event): void {
-    this.filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
-    // Reset to the first page when applying a new filter
-    this.currentPage = 0; 
-    if (this.paginator) {
-        this.paginator.firstPage();
-    }
-    this.loadEmpleados(); // Trigger backend filtering
+    this.filterValue = (event.target as HTMLInputElement).value
+      .trim()
+      .toLowerCase();
+    this.paginator.pageIndex = 0; // Actualizar el índice del paginador
+    this.loadEmpleados(); // Llamar al servicio para filtrar
   }
 
   openForm(empleado?: Empleado): void {
@@ -106,21 +124,77 @@ export class EmpleadoListComponent implements OnInit, AfterViewInit {
 
   deleteEmpleado(id: number | undefined): void {
     if (!id) {
-      this.snackBar.open('ID de empleado no válido para eliminar.', 'Cerrar', { duration: 3000 });
+      this.snackBar.open('ID de empleado no válido para eliminar.', 'Cerrar', {
+        duration: 3000,
+      });
       return;
     }
 
-    if (confirm('¿Estás seguro de desactivar este empleado? (Esto cambiará su estado a inactivo)')) { // Clarify action
-      this.empleadoService.deactivateEmpleado(id).subscribe( // Call deactivateEmpleado
+    if (
+      confirm(
+        '¿Estás seguro de desactivar este empleado? (Esto cambiará su estado a inactivo)'
+      )
+    ) {
+      // Clarify action
+      this.empleadoService.deactivateEmpleado(id).subscribe(
+        // Call deactivateEmpleado
         () => {
-          this.snackBar.open('Empleado desactivado exitosamente', 'Cerrar', { duration: 3000 });
+          this.snackBar.open('Empleado desactivado exitosamente', 'Cerrar', {
+            duration: 3000,
+          });
           this.loadEmpleados();
         },
         (error: any) => {
           console.error('Error al desactivar empleado:', error);
-          this.snackBar.open('Error al desactivar empleado. Inténtalo de nuevo más tarde.', 'Cerrar', { duration: 5000 });
+          this.snackBar.open(
+            'Error al desactivar empleado. Inténtalo de nuevo más tarde.',
+            'Cerrar',
+            { duration: 5000 }
+          );
         }
       );
     }
   }
+
+  onSortChange(sort: Sort) {
+    if (sort.direction) {
+      this.currentSort = sort.active;
+      this.sortDirection = sort.direction;
+    } else {
+      this.currentSort = 'nombreCompleto'; // Default sort
+      this.sortDirection = 'asc';
+    }
+    this.loadEmpleados();
+  }
+
+  exportToExcel(): void {
+    const sortParam = `${this.currentSort},${this.sortDirection}`;
+    const apiUrl = this.empleadoService.getApiUrl() + '/export/excel'; // ⭐️ Corrección: Se usa un nuevo método en el servicio para obtener la URL
+    this.exportService.exportToExcel(apiUrl, this.filterValue, sortParam)
+      .subscribe({
+        next: (response) => {
+          this.exportService.downloadFile(response, 'empleados.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        },
+        error: (error) => {
+          console.error('Error al exportar a Excel:', error);
+          this.snackBar.open('Error al exportar a Excel.', 'Cerrar', { duration: 5000 });
+        }
+      });
+  } 
+  
+    exportToPdf(): void {
+    const sortParam = `${this.currentSort},${this.sortDirection}`;
+    const apiUrl = this.empleadoService.getApiUrl() + '/export/pdf'; // ⭐️ Corrección: Se usa un nuevo método en el servicio para obtener la URL
+    this.exportService.exportToPdf(apiUrl, this.filterValue, sortParam)
+      .subscribe({
+        next: (response) => {
+          this.exportService.downloadFile(response, 'clientes.pdf', 'application/pdf');
+        },
+        error: (error) => {
+          console.error('Error al exportar a PDF:', error);
+          this.snackBar.open('Error al exportar a PDF.', 'Cerrar', { duration: 5000 });
+        }
+      });
+  } 
+
 }

@@ -22,8 +22,3 @@ export interface Proyecto {
   notasProyecto: string | null; // Añadido
   fechaCreacion: string | Date | null; // Changed to 'string | null' as it's backend-managed on creation
 }
-
-export interface DropdownItem {
-  id: number; 
-  nombre: string;
-}

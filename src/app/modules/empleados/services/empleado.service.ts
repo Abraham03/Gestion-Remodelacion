@@ -6,34 +6,52 @@ import { map } from 'rxjs/operators';
 import { Empleado } from '../models/empleado.model'; // Assuming Empleado model exists
 import { environment } from '../../../../environments/environment';
 import { Page } from '../../../core/models/page.model'; // Assuming Page model exists
+import { ApiResponse } from '../../../core/models/ApiResponse';
+import { BaseService } from '../../../core/services/base.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class EmpleadoService {
-  private apiUrl = `${environment.apiUrl}/empleados`;
+export class EmpleadoService extends BaseService<Empleado> {
 
-  constructor(private http: HttpClient) {}
+  constructor(http: HttpClient) {
+    super(http, `${environment.apiUrl}/empleados`);
+  }
 
-  getEmpleados(page: number = 0, size: number = 10, sort: string = 'nombreCompleto', filter: string = ''): Observable<Page<Empleado>> {
+  getApiUrl(): string {
+    return this.apiUrl;
+  }  
+
+  getEmpleados(
+    page: number = 0,
+    size: number = 5,
+    filter: string = '',
+    sort: string = 'nombreCompleto,asc'
+  ): Observable<Page<Empleado>> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString())
       .set('sort', sort);
-
     if (filter) {
       params = params.set('filter', filter);
     }
-    return this.http.get<Page<Empleado>>(this.apiUrl, { params });
+    return this.http.get<ApiResponse<Page<Empleado>>>(this.apiUrl, { params }).pipe(
+      map(response => this.extractPageData(response))
+    );
   }
 
   getEmpleadosForDropdown(): Observable<{ id: number; nombre: string }[]> {
-    // IMPORTANT: Same logic as ClienteService. If your default /empleados endpoint is paginated.
-    const params = new HttpParams().set('size', '1000'); // Request a large number of items
-
-    return this.http.get<Page<Empleado>>(`${this.apiUrl}`, { params }).pipe( // <-- Type as Page<Empleado> here
-      map((page: Page<Empleado>) => page.content.map((emp: Empleado) => ({ id: emp.id!, nombre: emp.nombreCompleto }))) // <-- Access page.content
-    );
+    const params = new HttpParams().set('size', '1000'); 
+    return this.http
+      .get<Page<Empleado>>(`${this.apiUrl}`, { params })
+      .pipe(
+        map((response: Page<Empleado>) =>
+          response.content.map((emp: Empleado) => ({
+            id: emp.id!,
+            nombre: emp.nombreCompleto,
+          }))
+        )
+      );
   }
 
   getEmpleado(id: number): Observable<Empleado> {
@@ -41,6 +59,9 @@ export class EmpleadoService {
   }
 
   createEmpleado(empleado: Empleado): Observable<Empleado> {
+    // Es buena práctica eliminar id si el backend lo autogenera
+    const empleadoToSend = { ...empleado };
+    delete empleadoToSend.id;
     return this.http.post<Empleado>(this.apiUrl, empleado);
   }
 
@@ -50,7 +71,7 @@ export class EmpleadoService {
 
   deactivateEmpleado(id: number): Observable<any> {
     return this.http.patch<any>(`${this.apiUrl}/${id}/status`, null, {
-      params: new HttpParams().set('activo', 'false')
+      params: new HttpParams().set('activo', 'false'),
     });
   }
 }

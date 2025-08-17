@@ -29,7 +29,7 @@ import { map, shareReplay, distinctUntilChanged } from 'rxjs/operators';
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss'],
 })
-export class LayoutComponent implements OnInit, AfterViewInit, OnDestroy {
+export class LayoutComponent implements OnDestroy {
   private sidebarService = inject(SidebarService);
   private breakpointObserver = inject(BreakpointObserver);
 
@@ -43,65 +43,13 @@ export class LayoutComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private subscriptions = new Subscription();
 
-  // ELIMINAR: @HostBinding y el getter isSidebarClosedOnDesktop, ya no es necesario con el nuevo enfoque CSS
-  // @HostBinding('class.sidebar-closed-desktop')
-  // get isSidebarClosedOnDesktop(): boolean {
-  //   let closed = false;
-  //   let isHandset = false;
-  //   let isOpen = true;
-  //   this.isHandset$.subscribe(val => isHandset = val).unsubscribe();
-  //   this.isSidebarOpen$.subscribe(val => isOpen = val).unsubscribe();
-  //   closed = !isOpen && !isHandset;
-  //   return closed;
-  // }
+
 
   constructor() {}
 
-  ngOnInit() {
-    // No specific logic needed here for the sidenav state as SidebarService handles it
-  }
-
-  ngAfterViewInit() {
-    // Sincronizar el MatSidenav con el SidebarService's state
-    // Usamos combineLatest para reaccionar a cambios en `isHandset$` e `isSidebarOpen$`
-    this.subscriptions.add(
-      combineLatest([this.isHandset$, this.sidebarService.isSidebarOpen$]).pipe(
-        distinctUntilChanged((prev, curr) => prev[0] === curr[0] && prev[1] === curr[1])
-      ).subscribe(([isHandset, isSidebarOpen]) => {
-        if (this.sidenav) {
-          if (isHandset) {
-            this.sidenav.mode = 'over';
-            if (isSidebarOpen) {
-              this.sidenav.open();
-            } else {
-              this.sidenav.close();
-            }
-          } else { // Desktop
-            this.sidenav.mode = 'side';
-            if (isSidebarOpen) {
-              this.sidenav.open();
-            } else {
-              this.sidenav.close();
-            }
-          }
-        }
-      })
-    );
-
-    // Asegurarse de que el sidenav se cierre si se hace clic fuera en modo 'over'
-    // Puedes añadir esto si aún no lo tienes gestionado
-    this.subscriptions.add(
-        this.sidenav.openedStart.subscribe(() => {
-            // Lógica si necesitas hacer algo cuando se empieza a abrir
-        })
-    );
-    this.subscriptions.add(
-        this.sidenav.closedStart.subscribe(() => {
-            // Lógica si necesitas hacer algo cuando se empieza a cerrar
-            // Por ejemplo, para sincronizar con el SidebarService si se cierra manualmente
-            // this.sidebarService.closeSidebar();
-        })
-    );
+  // Agrega este método para sincronizar el estado del servicio cuando se cierra el sidenav en modo over.
+  onSidenavClosed() {
+    this.sidebarService.closeSidebar();
   }
 
   ngOnDestroy(): void {

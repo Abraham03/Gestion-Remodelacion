@@ -1,7 +1,7 @@
 // src/app/modules/empleados/components/empleado-form/empleado-form.component.ts
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogActions, MatDialogModule } from '@angular/material/dialog';
 import { EmpleadoService } from '../../services/empleado.service';
 import { Empleado } from '../../models/empleado.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -24,7 +24,9 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     MatCheckboxModule,
     MatButtonModule,
     MatDatepickerModule,
-  ],
+    MatDialogActions,
+    MatDialogModule
+],
   templateUrl: './empleado-form.component.html',
   styleUrls: ['./empleado-form.component.scss'],
   providers: [provideNativeDateAdapter()],

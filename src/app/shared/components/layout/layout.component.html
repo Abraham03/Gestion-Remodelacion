@@ -1,21 +1,28 @@
-<app-header (toggleSidebarEvent)="onToggleSidebar()"></app-header>
-
-<mat-sidenav-container class="app-sidenav-container">
-  <mat-sidenav
-    #sidenav
-    [mode]="(isHandset$ | async) ? 'over' : 'side'"
-    [opened]="(isSidebarOpen$ | async)"
-    class="app-sidebar"
+<div class="app-layout-wrapper">
+  <mat-sidenav-container
+    class="app-sidenav-container-main"
     [class.sidebar-closed]="!(isSidebarOpen$ | async) && !(isHandset$ | async)"
-    [fixedInViewport]="true"             [fixedTopGap]="(isHandset$ | async) ? 56 : 64" [fixedBottomGap]="(isHandset$ | async) ? 48 : 64" >
-    <app-sidebar [isSidebarOpen]="(isSidebarOpen$ | async) ?? true"></app-sidebar>
-  </mat-sidenav>
+  >
+    <mat-sidenav
+      #sidenav
+      [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="(isSidebarOpen$ | async)"
+      class="app-sidebar"
+      (closed)="onSidenavClosed()"
+      [fixedInViewport]="(isHandset$ | async)"
+      [fixedTopGap]="(isHandset$ | async) ? 56 : 64"
+      [fixedBottomGap]="(isHandset$ | async) ? 48 : 64"
+    >
+      <app-sidebar [isSidebarOpen]="(isSidebarOpen$ | async) ?? true"></app-sidebar>
+    </mat-sidenav>
+    <mat-sidenav-content></mat-sidenav-content>
+  </mat-sidenav-container>
 
-  <mat-sidenav-content class="app-sidenav-content">
-    <main class="main-content">
+  <div class="app-content-area">
+    <app-header (toggleSidebarEvent)="onToggleSidebar()"></app-header>
+    <main class="main-content-area">
       <router-outlet></router-outlet>
     </main>
-  </mat-sidenav-content>
-</mat-sidenav-container>
-
-<app-footer></app-footer>
+    <app-footer></app-footer>
+  </div>
+</div>

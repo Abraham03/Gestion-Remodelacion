@@ -1,29 +1,11 @@
 // src/app/core/models/page.model.ts
 export interface Page<T> {
   content: T[];
-  pageable: {
-    sort: {
-      sorted: boolean;
-      unsorted: boolean;
-      empty: boolean;
-    };
-    offset: number;
-    pageSize: number;
-    pageNumber: number;
-    paged: boolean;
-    unpaged: boolean;
-  };
-  last: boolean;
-  totalPages: number;
   totalElements: number;
+  totalPages: number;
   size: number;
-  number: number;
-  sort: {
-    sorted: boolean;
-    unsorted: boolean;
-    empty: boolean;
-  };
+  number: number; // current page number (0-indexed)
   first: boolean;
-  numberOfElements: number;
+  last: boolean;
   empty: boolean;
 }

@@ -1,16 +1,14 @@
-// src/app/shared/components/header/header.component.ts
-import { Component, inject, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SidebarService } from '../sidebar/sidebar.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, TitleCasePipe } from '@angular/common'; // Agregamos TitleCasePipe
 import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscription } from 'rxjs';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { MatDivider } from '@angular/material/divider';
 
 @Component({
   selector: 'app-header',
@@ -20,48 +18,31 @@ import { toObservable } from '@angular/core/rxjs-interop';
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
-    MatMenuModule
+    MatMenuModule,
+    TitleCasePipe,
+    MatDivider
   ],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnDestroy {
   private sidebarService = inject(SidebarService);
-  private authService = inject(AuthService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
 
+  // ⭐️ INYECCIÓN DEL SERVICIO Y ACCESO DIRECTO A SIGNALS
+  authService = inject(AuthService);
+
   @Output() toggleSidebarEvent = new EventEmitter<void>();
 
-  isAuthenticated: boolean = false;
-  userName: string | null = null;
-  userRole: string | null = null; // Removed, as you only want name/roles in sidebar or less prominent
+  constructor() {}
 
-  private subscriptions = new Subscription();
-
-  constructor() {
-    this.subscriptions.add(
-      toObservable(this.authService.isAuthenticated).subscribe(status => {
-        this.isAuthenticated = status;
-      })
-    );
-
-    this.subscriptions.add(
-      toObservable(this.authService.currentUser).subscribe(user => {
-        this.userName = user ? user.username : null;
-         this.userRole = user && user.authorities && user.authorities.length > 0 ? String(user.authorities[0]).replace('ROLE_', '') : null;
-      })
-    );
-  }
-
-  ngOnInit() {
-    // No additional ngOnInit specific logic needed
-  }
+  // ⭐️ LÓGICA DE ROLES Y NOMBRES AHORA CON SIGNALS DIRECTOS
+  // Puedes acceder a ellos directamente en el template: `authService.currentUser()?.username`
 
   onToggleSidebar() {
     this.toggleSidebarEvent.emit();
   }
-
 
   onLogout() {
     this.authService.logout();
@@ -73,6 +54,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+    // Ya no se necesitan suscripciones, así que `subscriptions` y `ngOnDestroy` pueden ser eliminados.
   }
 }
