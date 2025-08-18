@@ -13,11 +13,11 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ProyectosFormComponent } from '../proyecto-form/proyectos-form.component';
-import { MatSortModule } from '@angular/material/sort'; // Importado MatSortModule
+import { MatSortModule, Sort } from '@angular/material/sort'; // Importado MatSortModule
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips'; // <-- Importar MatChipsModule
-
+import { ExportService } from '../../../../core/services/export.service';
 
 @Component({
   selector: 'app-proyectos-list',
@@ -33,7 +33,7 @@ import { MatChipsModule } from '@angular/material/chips'; // <-- Importar MatChi
     MatInputModule,
     MatSortModule,
     MatChipsModule,
-    MatProgressBarModule
+    MatProgressBarModule,
   ],
   templateUrl: './proyecto-list.component.html',
   styleUrls: ['./proyecto-list.component.scss'],
@@ -65,7 +65,8 @@ export class ProyectosListComponent implements AfterViewInit {
   constructor(
     private proyectosService: ProyectosService,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private exportService: ExportService
   ) {}
 
   ngAfterViewInit(): void {
@@ -85,8 +86,14 @@ export class ProyectosListComponent implements AfterViewInit {
    * ordenamiento y filtro.
    */
   loadProyectos(): void {
+    const sortParam = `${this.currentSort},${this.sortDirection}`;
     this.proyectosService
-      .getProyectosPaginated(this.currentPage, this.pageSize, this.filterValue)
+      .getProyectosPaginated(
+        this.currentPage,
+        this.pageSize,
+        this.filterValue,
+        sortParam
+      )
       .subscribe({
         next: (response) => {
           this.dataSource.data = response.content;
@@ -171,6 +178,60 @@ export class ProyectosListComponent implements AfterViewInit {
       default:
         return 'basic';
     }
-  }  
+  }
 
+  onSortChange(sort: Sort) {
+    if (sort.direction) {
+      this.currentSort = sort.active;
+      this.sortDirection = sort.direction;
+    } else {
+      this.currentSort = 'nombreCompleto'; // Default sort
+      this.sortDirection = 'asc';
+    }
+    this.loadProyectos();
+  }
+
+  exportToExcel(): void {
+    const sortParam = `${this.currentSort},${this.sortDirection}`;
+    const apiUrl = this.proyectosService.getApiUrl() + '/export/excel'; // ⭐️ Corrección: Se usa un nuevo método en el servicio para obtener la URL
+    this.exportService
+      .exportToExcel(apiUrl, this.filterValue, sortParam)
+      .subscribe({
+        next: (response) => {
+          this.exportService.downloadFile(
+            response,
+            'Reporte_Proyectos.xlsx',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+          );
+        },
+        error: (error) => {
+          console.error('Error al exportar a Excel:', error);
+          this.snackBar.open('Error al exportar a Excel.', 'Cerrar', {
+            duration: 5000,
+          });
+        },
+      });
+  }
+
+  exportToPdf(): void {
+    const sortParam = `${this.currentSort},${this.sortDirection}`;
+    const apiUrl = this.proyectosService.getApiUrl() + '/export/pdf'; // ⭐️ Corrección: Se usa un nuevo método en el servicio para obtener la URL
+    this.exportService
+      .exportToPdf(apiUrl, this.filterValue, sortParam)
+      .subscribe({
+        next: (response) => {
+          this.exportService.downloadFile(
+            response,
+            'Reporte_Proyectos.pdf',
+            'application/pdf'
+          );
+        },
+        error: (error) => {
+          console.error('Error al exportar a PDF:', error);
+          this.snackBar.open('Error al exportar a PDF.', 'Cerrar', {
+            duration: 5000,
+          });
+        },
+      });
+  }
 }

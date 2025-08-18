@@ -162,7 +162,7 @@ export class ClienteListComponent implements AfterViewInit {
     this.exportService.exportToExcel(apiUrl, this.filterValue, sortParam)
       .subscribe({
         next: (response) => {
-          this.exportService.downloadFile(response, 'clientes.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+          this.exportService.downloadFile(response, 'Reporte_Clientes.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         },
         error: (error) => {
           console.error('Error al exportar a Excel:', error);
@@ -177,7 +177,7 @@ export class ClienteListComponent implements AfterViewInit {
     this.exportService.exportToPdf(apiUrl, this.filterValue, sortParam)
       .subscribe({
         next: (response) => {
-          this.exportService.downloadFile(response, 'clientes.pdf', 'application/pdf');
+          this.exportService.downloadFile(response, 'Reporte_Clientes.pdf', 'application/pdf');
         },
         error: (error) => {
           console.error('Error al exportar a PDF:', error);

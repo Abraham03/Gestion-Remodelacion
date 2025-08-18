@@ -173,7 +173,7 @@ export class EmpleadoListComponent implements AfterViewInit {
     this.exportService.exportToExcel(apiUrl, this.filterValue, sortParam)
       .subscribe({
         next: (response) => {
-          this.exportService.downloadFile(response, 'empleados.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+          this.exportService.downloadFile(response, 'Reporte_Empleados.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         },
         error: (error) => {
           console.error('Error al exportar a Excel:', error);
@@ -188,7 +188,7 @@ export class EmpleadoListComponent implements AfterViewInit {
     this.exportService.exportToPdf(apiUrl, this.filterValue, sortParam)
       .subscribe({
         next: (response) => {
-          this.exportService.downloadFile(response, 'clientes.pdf', 'application/pdf');
+          this.exportService.downloadFile(response, 'Reporte_Empleados.pdf', 'application/pdf');
         },
         error: (error) => {
           console.error('Error al exportar a PDF:', error);

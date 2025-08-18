@@ -13,11 +13,11 @@
           <mat-icon>add</mat-icon>
           Agregar Cliente
         </button>
-        <button mat-flat-button color="accent" >
+        <button mat-flat-button color="accent" (click)="exportToExcel()">
           <mat-icon>file_download</mat-icon>
           Excel
         </button>
-        <button mat-flat-button color="primary" >
+        <button mat-flat-button color="primary" (click)="exportToPdf()">
           <mat-icon>picture_as_pdf</mat-icon>
           PDF
         </button>

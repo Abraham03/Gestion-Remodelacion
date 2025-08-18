@@ -15,6 +15,9 @@ export class HorasTrabajadasService  extends BaseService<HorasTrabajadas> {
   constructor(http: HttpClient) {
     super(http, `${environment.apiUrl}/horas-trabajadas`);
   }
+ getApiUrl(): string {
+    return this.apiUrl;
+  }  
 
   /**
    * Obtiene una página de registros de horas trabajadas con opciones de paginación,
@@ -24,13 +27,12 @@ export class HorasTrabajadasService  extends BaseService<HorasTrabajadas> {
     page: number,
     size: number,
     filter: string,
-    sort: string, // Nuevo parámetro para la columna a ordenar
-    order: string // Nuevo parámetro para la dirección del orden    
+    sort: string = 'fecha,desc',
   ): Observable<Page<HorasTrabajadas>> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString())
-      .set('sort', `${sort},${order}`); // Añadir el parámetro de ordenamiento
+      .set('sort', `${sort}`);
     if (filter) {
       params = params.set('filter', filter); 
     }

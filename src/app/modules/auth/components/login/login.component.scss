@@ -1,91 +1,88 @@
 /* src/app/modules/auth/components/login/login.component.scss */
 
-.auth-container {
+// 1. IMPORTAMOS TUS VARIABLES Y MIXINS GLOBALES
+@use '../../../../../styles/abstracts/variables' as vars;
+@use '../../../../../styles/abstracts/mixins' as mixins;
+
+
+.login-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%); // Gradiente suave
-  padding: 16px; // Espaciado para móviles
-  box-sizing: border-box; // Incluye padding en el tamaño total
+  padding: vars.$spacing-s;
+  // ✅ CAMBIO: Usamos un color de fondo más alineado a la marca
+  background-color: vars.$color-background; 
+  box-sizing: border-box;
 }
 
-.auth-card {
+.login-card {
   width: 100%;
-  max-width: 400px;
-  padding: 32px; // Más padding para un look profesional
-  border-radius: 8px; // Bordes más suaves
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); // Sombra más pronunciada para profundidad
-  animation: fadeIn 0.5s ease-out; // Animación de entrada
+  max-width: 450px;
+  padding: vars.$spacing-l;
+  border-radius: vars.$border-radius-m;
+  box-shadow: vars.$box-shadow-m;
+  animation: fadeIn 0.5s ease-out;
 
-  @media (max-width: 600px) {
-    padding: 24px;
-    margin: 16px; // Asegura que no se pegue a los bordes en móviles
+  @include mixins.respond-to(mobile) {
+    padding: vars.$spacing-m;
   }
 }
 
-.auth-card-header {
+.login-header {
   text-align: center;
-  margin-bottom: 24px; // Consistent spacing below the header section
-  display: flex; // Use flexbox for better vertical alignment and control
-  flex-direction: column; // Stack items vertically
-  align-items: center; // Center items horizontally within the flex container
-  justify-content: center; // Center items vertically if there's extra space
-}
+  margin-bottom: vars.$spacing-l;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-.auth-card-header .app-logo {
-  max-width: 120px; // Slightly larger logo for more presence
-  height: auto; // Maintain aspect ratio
-  margin-bottom: 20px; // More space below the logo
-  // optional: if your logo looks good with rounded corners
-  // border-radius: 50%; // Makes it circular
-  // border: 2px solid #3f51b5; // Subtle border around the logo
-}
+  .logo {
+    // ✅ CAMBIO: Se corrige la función clamp y se ajustan los valores.
+    width: clamp(120px, 25vw, 180px);
+    height: auto;
+    // ✅ CAMBIO: Se ajusta el margen inferior para respetar el 'Área de Respeto'.
+    margin-bottom: vars.$spacing-m;
+  }
 
-.auth-card-header mat-card-title {
-  font-size: 2.5rem; // Even larger title
-  font-weight: 700; // Make it bolder
-  color: #3f51b5; // Primary color
-  margin-bottom: 10px; // Space between title and subtitle
-}
-
-.auth-card-header mat-card-subtitle {
-  font-size: 1.1rem; // Slightly larger and more readable subtitle
-  color: #616161; // Darker secondary text color for better readability
-  line-height: 1.4; // Improve readability for subtitle
-  margin-top: 0; // Remove default top margin if any, controlled by title's margin-bottom
+  mat-card-title {
+    // ✅ CAMBIO: Se usa la tipografía oficial del manual.
+    font-family: vars.$font-family-serif;
+    color: vars.$color-brand-black; // Color de la marca
+    @include mixins.responsive-text(1.5rem, 2rem);
+    font-weight: 700;
+    margin-bottom: vars.$spacing-xs;
+  }
+  
+  mat-card-subtitle {
+    color: vars.$color-text-secondary;
+    @include mixins.responsive-text(0.9rem, 1rem);
+  }
 }
 
 .full-width {
   width: 100%;
-  margin-bottom: 20px; // More space between fields
 }
 
 .login-button {
-  height: 48px; // Botón un poco más alto
-  font-size: 1.1rem;
+  height: 48px;
+  width: 100%;
+  font-size: 1rem;
   font-weight: 500;
-
-  mat-spinner {
-    margin: 0 auto; // Centrar spinner
-  }
+  margin-top: vars.$spacing-s;
+  // ✅ CAMBIO: Se usa el color de la marca para el botón principal
+  background-color: vars.$color-brand-black;
+  color: vars.$color-text-light;
 }
 
-.auth-card-actions {
-  display: flex;
-  justify-content: center;
-  margin-top: 24px; // Espacio sobre el footer
-}
-
-.auth-footer {
+.login-actions {
   text-align: center;
-  color: #616161; // Color de texto
-  font-size: 0.9rem;
+  margin-top: vars.$spacing-m;
+  padding: 0;
 
   a {
-    color: #3f51b5;
+    color: vars.$color-primary;
     text-decoration: none;
-    font-weight: 500;
+    font-size: 0.9rem;
 
     &:hover {
       text-decoration: underline;
@@ -93,14 +90,7 @@
   }
 }
 
-// Animación de entrada
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
 }

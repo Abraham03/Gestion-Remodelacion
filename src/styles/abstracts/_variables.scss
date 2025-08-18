@@ -12,14 +12,15 @@ $color-text-dark: #333;
 $color-text-light: #fff;
 $color-shadow: rgba(0, 0, 0, 0.1);
 $border-color: #e0e0e0; // Un gris claro para bordes sutiles
-
+$color-brand-black: #121212; // Chinese Black [cite: 13, 16, 18]
+$color-brand-yellow: #FFD245; // Gargoyle Gas [cite: 15, 22, 24]
 
 $color-success: #4caf50; // Verde para éxito, balance positivo
 $color-info: #00bcd4;    // Cian para información, como ingresos
 
 // --- TIPOGRAFÍA ---
 $font-family: Roboto, "Helvetica Neue", sans-serif;
-
+$font-family-serif: "Times New Roman", serif; // Times New Roman 
 // --- DISEÑO RESPONSIVO ---
 $breakpoint-mobile: 600px;
 $breakpoint-tablet: 1024px;

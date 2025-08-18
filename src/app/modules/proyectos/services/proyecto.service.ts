@@ -18,6 +18,10 @@ export class ProyectosService extends BaseService<Proyecto> {
     super(http, `${environment.apiUrl}/proyectos`);
   }
 
+    getApiUrl(): string {
+    return this.apiUrl;
+  }  
+
   getProyectosPaginated(
     page: number = 0,
     size: number = 5,

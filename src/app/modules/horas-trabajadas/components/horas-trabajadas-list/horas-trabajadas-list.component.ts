@@ -15,6 +15,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../../../../core/services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
+import { ExportService } from '../../../../core/services/export.service';
 
 @Component({
   selector: 'app-horas-trabajadas-list',
@@ -36,7 +37,7 @@ import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
   templateUrl: './horas-trabajadas-list.component.html',
   styleUrl: './horas-trabajadas-list.component.scss'
 })
-export class HorasTrabajadasListComponent implements AfterViewInit, OnDestroy {
+export class HorasTrabajadasListComponent implements AfterViewInit {
   displayedColumns: string[] = [
     'fecha',
     'nombreEmpleado',
@@ -68,7 +69,8 @@ export class HorasTrabajadasListComponent implements AfterViewInit, OnDestroy {
   constructor(
     private horasTrabajadasService: HorasTrabajadasService,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private exportService: ExportService
   ) {}
 
   ngAfterViewInit() {
@@ -91,22 +93,17 @@ export class HorasTrabajadasListComponent implements AfterViewInit, OnDestroy {
 
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }  
-
     /**
    * Carga los registros de horas trabajadas aplicando paginación, ordenamiento y filtro.
    */
   loadHorasTrabajadas(): void {
+  const sortParam = `${this.currentSort},${this.sortDirection}`;
     this.horasTrabajadasService
       .getHorasTrabajadasPaginated(
         this.currentPage,
         this.pageSize,
         this.filterValue,
-        this.currentSort, 
-        this.sortDirection
+        sortParam
       )
       .subscribe({
         next: (response) => {
@@ -179,5 +176,46 @@ export class HorasTrabajadasListComponent implements AfterViewInit, OnDestroy {
         });
     }
   }
+
+  onSortChange(sort: Sort) {
+    if (sort.direction) {
+      this.currentSort = sort.active;
+      this.sortDirection = sort.direction;
+    } else {
+      this.currentSort = 'nombreCompleto'; // Default sort
+      this.sortDirection = 'asc';
+    }
+    this.loadHorasTrabajadas();
+  }
+
+  exportToExcel(): void {
+    const sortParam = `${this.currentSort},${this.sortDirection}`;
+    const apiUrl = this.horasTrabajadasService.getApiUrl() + '/export/excel'; // ⭐️ Corrección: Se usa un nuevo método en el servicio para obtener la URL
+    this.exportService.exportToExcel(apiUrl, this.filterValue, sortParam)
+      .subscribe({
+        next: (response) => {
+          this.exportService.downloadFile(response, 'Reporte_Empleados.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        },
+        error: (error) => {
+          console.error('Error al exportar a Excel:', error);
+          this.snackBar.open('Error al exportar a Excel.', 'Cerrar', { duration: 5000 });
+        }
+      });
+  } 
+  
+    exportToPdf(): void {
+    const sortParam = `${this.currentSort},${this.sortDirection}`;
+    const apiUrl = this.horasTrabajadasService.getApiUrl() + '/export/pdf'; // ⭐️ Corrección: Se usa un nuevo método en el servicio para obtener la URL
+    this.exportService.exportToPdf(apiUrl, this.filterValue, sortParam)
+      .subscribe({
+        next: (response) => {
+          this.exportService.downloadFile(response, 'Reporte_Clientes.pdf', 'application/pdf');
+        },
+        error: (error) => {
+          console.error('Error al exportar a PDF:', error);
+          this.snackBar.open('Error al exportar a PDF.', 'Cerrar', { duration: 5000 });
+        }
+      });
+  }   
 
 }
